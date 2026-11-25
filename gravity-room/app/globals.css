@@ -1,0 +1,928 @@
+@import "tailwindcss";
+
+/* Tokens. Source of truth: docs/brand-guidelines.md */
+@theme inline {
+  --font-display: var(--font-oxanium), system-ui, sans-serif;
+  --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
+}
+
+@theme {
+  --color-void: #03060d;
+  --color-deep: #0a101c;
+  --color-starlight: #f2f0ff;
+  --color-plasma: #9b8cff;
+  --color-comet: #ff7a6b;
+  --color-solar: #ffc857;
+  --color-aurora: #5eead4;
+  --color-line: rgb(242 240 255 / 0.2);
+}
+
+:root {
+  --tile: clamp(46px, 6.3vw, 96px);
+  --edge: 2px;
+  --gutter: clamp(16px, 3vw, 40px);
+  color-scheme: dark;
+}
+
+html {
+  background: var(--color-void);
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--color-starlight);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+::selection {
+  background: var(--color-plasma);
+  color: var(--color-void);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-aurora);
+  outline-offset: 3px;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Sky ---------- */
+
+.sky {
+  position: fixed;
+  inset: 0;
+  height: 100lvh;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  /* Nebula: three soft clouds over the void. */
+  background:
+    radial-gradient(60% 50% at 12% 8%, rgb(56 104 200 / 0.14), transparent 70%),
+    radial-gradient(50% 45% at 92% 70%, rgb(94 234 212 / 0.08), transparent 70%),
+    radial-gradient(45% 40% at 68% 18%, rgb(255 122 107 / 0.05), transparent 70%), var(--color-void);
+}
+.sky canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.sky .twinkle {
+  animation: twinkle 3.6s ease-in-out infinite alternate;
+}
+.sky .twinkle.slow {
+  animation-duration: 5.8s;
+  animation-delay: -2s;
+}
+.sky .shooting {
+  position: absolute;
+  top: 12%;
+  left: 68%;
+  width: 140px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--color-starlight), transparent);
+  opacity: 0;
+  transform: rotate(-28deg) translateX(0);
+  animation: shoot 11s ease-in 3s infinite;
+}
+@keyframes twinkle {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.25;
+  }
+}
+@keyframes shoot {
+  0% {
+    opacity: 0;
+    transform: rotate(-28deg) translateX(0);
+  }
+  1.5% {
+    opacity: 1;
+  }
+  7%,
+  100% {
+    opacity: 0;
+    transform: rotate(-28deg) translateX(-460px);
+  }
+}
+
+/* ---------- Colour blocks ---------- */
+
+.c-plasma {
+  --c: var(--color-plasma);
+}
+.c-comet {
+  --c: var(--color-comet);
+}
+.c-solar {
+  --c: var(--color-solar);
+}
+.c-aurora {
+  --c: var(--color-aurora);
+}
+.c-starlight {
+  --c: var(--color-starlight);
+}
+.c-plasma,
+.c-comet,
+.c-solar,
+.c-aurora,
+.c-starlight {
+  background: var(--c);
+  color: var(--color-void);
+}
+.c-void {
+  --c: var(--color-starlight);
+  background: var(--color-deep);
+  color: var(--color-starlight);
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: var(--edge) solid rgb(242 240 255 / 0.35);
+  border-radius: 999px;
+  background: var(--color-deep);
+  color: var(--color-starlight);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease,
+    border-color 150ms ease;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-starlight);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.btn-primary,
+.btn-solar,
+.btn-light {
+  border-color: transparent;
+  color: var(--color-void);
+}
+.btn-primary {
+  background: var(--color-plasma);
+  box-shadow: 0 0 26px -6px var(--color-plasma);
+}
+.btn-solar {
+  background: var(--color-solar);
+  box-shadow: 0 0 26px -6px var(--color-solar);
+}
+.btn-light {
+  background: var(--color-starlight);
+}
+.btn[role="switch"][aria-checked="true"] {
+  border-color: var(--color-aurora);
+}
+.switch-state {
+  min-width: 2.4ch;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgb(242 240 255 / 0.14);
+  font-size: 13px;
+  text-transform: uppercase;
+}
+.btn[aria-checked="true"] .switch-state {
+  background: var(--color-aurora);
+  color: var(--color-void);
+}
+
+/* ---------- The room ---------- */
+
+.room {
+  position: relative;
+  /* Above the ship, which lifts off from behind the deck. */
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  overflow: hidden;
+}
+
+.room-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px var(--gutter) 0;
+}
+
+.name {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(6px, 0.7vw, 10px) clamp(18px, 3vw, 44px);
+  padding: clamp(16px, 3.2vh, 36px) var(--gutter) 0;
+}
+.word {
+  display: flex;
+  gap: clamp(5px, 0.6vw, 9px);
+}
+
+.loose {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 12px;
+  padding: clamp(16px, 2.8vh, 28px) var(--gutter) 0;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 172px));
+  justify-content: center;
+  gap: 10px;
+  padding: clamp(16px, 3vh, 32px) var(--gutter) clamp(20px, 3vh, 36px);
+}
+@media (min-width: 720px) {
+  .cards {
+    grid-template-columns: repeat(3, minmax(0, 272px));
+    gap: 16px;
+  }
+}
+
+.cards li {
+  display: flex;
+}
+
+/* ---------- Objects ---------- */
+
+.obj {
+  position: relative;
+  /* Night glass: a slab of the void itself, lit from the upper left by its
+     own colour, with a faint second glow in the far corner. Opaque, so
+     objects still hide each other when they stack. */
+  background:
+    radial-gradient(130% 95% at 0% 0%, color-mix(in srgb, var(--c) 34%, transparent), transparent 62%),
+    radial-gradient(90% 70% at 100% 100%, color-mix(in srgb, var(--c) 13%, transparent), transparent 70%),
+    color-mix(in srgb, var(--c) 8%, var(--color-void));
+  color: color-mix(in srgb, var(--c) 72%, white);
+  border: var(--edge) solid color-mix(in srgb, var(--c) 62%, var(--color-void));
+  /* A dark keyline, a soft halo, a rim light on the top edge, and an inner glow. */
+  box-shadow:
+    0 0 0 1px rgb(3 6 13 / 0.8),
+    0 0 26px -8px color-mix(in srgb, var(--c) 70%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--c) 45%, white),
+    inset 0 0 26px -10px var(--c);
+  will-change: transform;
+  transition: box-shadow 200ms ease;
+}
+/* Picking a block up lights it. */
+.obj.grabbed {
+  box-shadow:
+    0 0 0 1px rgb(3 6 13 / 0.8),
+    0 0 44px -6px var(--c),
+    inset 0 1px 0 color-mix(in srgb, var(--c) 45%, white),
+    inset 0 0 30px -8px var(--c);
+}
+/* Letters and headings are the light source. */
+.tile,
+.stamp,
+.card-title {
+  text-shadow: 0 0 18px color-mix(in srgb, var(--c) 65%, transparent);
+}
+.card-sum {
+  color: color-mix(in srgb, var(--c) 22%, var(--color-starlight));
+}
+.room[data-mode="mess"] .obj {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  cursor: grab;
+}
+.room[data-mode="mess"] .obj.grabbed {
+  cursor: grabbing;
+  z-index: 5;
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tile);
+  height: var(--tile);
+  border-radius: clamp(8px, 1vw, 14px);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: calc(var(--tile) * 0.62);
+  line-height: 1;
+}
+
+/* Stardust shed by moving blocks. Sits behind them, in front of the sky. */
+.dust {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  white-space: nowrap;
+}
+a.pill:hover,
+a.pill:focus-visible {
+  background: var(--c);
+  color: var(--color-void);
+}
+
+/* Dots are little planets. */
+.dot {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 32% 28%,
+    color-mix(in srgb, var(--c) 55%, white),
+    var(--c) 50%,
+    color-mix(in srgb, var(--c) 50%, var(--color-void))
+  );
+}
+.dot.ringed::after {
+  content: "";
+  position: absolute;
+  inset: 30% -40%;
+  border: 3px solid color-mix(in srgb, var(--c) 55%, white);
+  border-top-color: transparent;
+  border-radius: 50%;
+  transform: rotate(-16deg);
+}
+.dot.sm {
+  width: 30px;
+  height: 30px;
+}
+.stamp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 19px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 118px;
+  padding: 12px 13px;
+  border-radius: 14px;
+  text-align: left;
+}
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.card-title {
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 21px;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+}
+.card-sum {
+  display: none;
+  margin-top: 6px;
+  font-size: 13.5px;
+  line-height: 1.3;
+}
+.card-meta {
+  margin-top: auto;
+  padding-top: 8px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+}
+@media (min-width: 720px) {
+  .card {
+    min-height: 176px;
+    padding: 16px 18px;
+  }
+  .card-top {
+    font-size: 13px;
+  }
+  .card-title {
+    font-size: 30px;
+  }
+  .card-sum {
+    display: block;
+  }
+  .card-meta {
+    font-size: 14px;
+  }
+}
+.card:focus-visible {
+  outline-offset: 4px;
+}
+
+@media (max-width: 479px) {
+  .loose {
+    gap: 10px;
+  }
+  .pill {
+    min-height: 44px;
+    padding: 0 16px;
+  }
+  .dot {
+    width: 36px;
+    height: 36px;
+  }
+  .dot.sm {
+    width: 24px;
+    height: 24px;
+  }
+  .stamp {
+    width: 46px;
+    height: 46px;
+    font-size: 17px;
+  }
+}
+
+/* ---------- Deck and controls ---------- */
+
+.bar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin-top: auto;
+  padding: 12px var(--gutter);
+  border-top: 1px solid var(--color-line);
+  background: rgb(3 6 13 / 0.86);
+  box-shadow: 0 -1px 24px rgb(155 140 255 / 0.25);
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 96px;
+  z-index: 60;
+  max-width: calc(100vw - 32px);
+  padding: 12px 20px;
+  border-radius: 999px;
+  box-shadow: 0 0 30px -4px var(--c);
+  font-family: var(--font-display);
+  font-weight: 700;
+  transform: translateX(-50%);
+  animation: pop 400ms cubic-bezier(0.3, 1.45, 0.5, 1);
+}
+
+/* ---------- Sections ---------- */
+
+.about {
+  background: rgb(10 16 28 / 0.72);
+}
+.contact {
+  position: relative;
+  overflow: hidden;
+}
+/* Dawn over the bottom edge. With motion on it brightens as the ship comes in. */
+.contact::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(85% 80% at 50% 115%, rgb(255 200 87 / 0.5), rgb(255 122 107 / 0.2) 50%, transparent 78%);
+  opacity: var(--dawn, 1);
+  pointer-events: none;
+}
+
+/* ---------- Scroll: the ship and the type it lights ---------- */
+
+/* The ship you fly by scrolling. Night glass like every other object: a dark
+   hull with a Plasma rim. Placed, sized and turned by ScrollStage. */
+.ship,
+.wake,
+.telemetry {
+  display: none;
+}
+html.motion .ship {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 44px;
+  aspect-ratio: 100 / 120;
+  /* --heat (0 to 1, set by a scene) turns the glow from Plasma to Comet and widens it. */
+  filter: drop-shadow(0 0 10px color-mix(in srgb, #ff7a6b calc(var(--heat, 0) * 100%), rgb(155 140 255 / 0.6)))
+    drop-shadow(
+      0 0 calc(36px + var(--heat, 0) * 30px) color-mix(in srgb, #ffc857 calc(var(--heat, 0) * 100%), rgb(94 234 212 / 0.22))
+    );
+  visibility: hidden;
+  pointer-events: none;
+  will-change: transform;
+}
+.ship svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+/* The flame is the throttle: it lengthens with scroll speed. */
+.ship-flame {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  transform: scaleY(var(--thrust, 0.1));
+  opacity: calc(0.3 + var(--thrust, 0.1) * 0.7);
+}
+/* Sparks from the engine, behind the ship and the page content. */
+html.motion .wake {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+html.motion .telemetry {
+  display: block;
+  position: fixed;
+  top: 12px;
+  right: var(--gutter);
+  z-index: 20;
+  padding: 6px 14px;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: rgb(3 6 13 / 0.82);
+  color: var(--color-aurora);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ---------- Scroll: the planet and its tools ---------- */
+
+/* Plain version: a heading and three short lists. */
+.orbit-stage {
+  position: relative;
+  display: grid;
+  gap: 28px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 64px var(--gutter);
+}
+.orbit-title {
+  color: var(--c);
+  font-size: 32px;
+  text-shadow: 0 0 24px color-mix(in srgb, var(--c) 55%, transparent);
+}
+.orbit-set ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.sat {
+  padding: 5px 14px;
+  border: 1.5px solid color-mix(in srgb, var(--c) 62%, var(--color-void));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--c) 10%, var(--color-void));
+  color: color-mix(in srgb, var(--c) 45%, white);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.planet,
+.orbit-rings {
+  display: none;
+}
+
+/* With motion: the stage pins, and ScrollStage flies the lists round the planet.
+   Stacking, back to front: far rings, far tools, planet, near rings, near tools, title. */
+/* How long each scene holds the screen. The scene itself is picked by
+   data-scene on <html>: see content/site.ts and lib/scenes. */
+html.motion .orbit {
+  height: 360vh;
+}
+html.motion[data-scene="supernova"] .orbit {
+  height: 480vh;
+}
+html.motion[data-scene="planetfall"] .orbit {
+  height: 640vh;
+}
+.scene-canvas,
+.daylight {
+  display: none;
+}
+html.motion .scene-canvas {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+/* A sky tint over the stars, for scenes that change the time of day. Dark at
+   the top and never bright at the bottom, so Starlight text stays readable. */
+html.motion .daylight {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  height: 100lvh;
+  background: linear-gradient(to bottom, #0a0f2e 0%, #1c1a4d 38%, #40245c 68%, #7c3355 90%, #a84f45 100%);
+  opacity: 0;
+  pointer-events: none;
+}
+html.motion[data-scene="planetfall"] footer {
+  background: rgb(3 6 13 / 0.55);
+}
+/* Scenes other than orbit place the titles themselves and have no planet. */
+html.motion:not([data-scene="orbit"]) .planet,
+html.motion:not([data-scene="orbit"]) .orbit-rings {
+  display: none;
+}
+html.motion:not([data-scene="orbit"]) .orbit-title {
+  top: 0;
+  right: auto;
+  left: 0;
+  font-size: clamp(34px, 4.6vw, 60px);
+  white-space: nowrap;
+}
+html.motion[data-scene="planetfall"] .orbit-title {
+  font-size: clamp(56px, 10vw, 124px);
+}
+html.motion .orbit-stage {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: block;
+  max-width: none;
+  height: 100svh;
+  padding: 0;
+  overflow: hidden;
+  perspective: 900px;
+}
+html.motion .orbit-h {
+  position: absolute;
+  top: clamp(64px, 9vh, 96px);
+  right: 0;
+  left: 0;
+  z-index: 6;
+  text-align: center;
+}
+html.motion .orbit-set {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+html.motion .orbit-title {
+  position: absolute;
+  top: calc(clamp(64px, 9vh, 96px) + 30px);
+  right: 0;
+  left: 0;
+  z-index: 6;
+  font-size: clamp(60px, 11vw, 132px);
+  text-align: center;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+html.motion .orbit-set ul {
+  display: block;
+  margin: 0;
+}
+html.motion .sat {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-shadow: 0 0 22px -8px var(--c);
+  will-change: transform, opacity;
+}
+html.motion .orbit-rings {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke-width: 1.5;
+  pointer-events: none;
+}
+html.motion .orbit-rings.front {
+  z-index: 4;
+}
+/* A shaded sphere like the dots in the room, with cloud bands that turn as you scroll. */
+html.motion .planet {
+  --c: var(--color-plasma);
+  display: block;
+  position: absolute;
+  top: 56%;
+  left: 50%;
+  z-index: 3;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 32% 28%,
+    color-mix(in srgb, var(--c) 50%, white),
+    var(--c) 46%,
+    color-mix(in srgb, var(--c) 28%, var(--color-void)) 100%
+  );
+  box-shadow:
+    0 0 60px -6px color-mix(in srgb, var(--c) 70%, transparent),
+    0 0 180px 10px color-mix(in srgb, var(--c) 22%, transparent),
+    inset -18px -22px 60px rgb(3 6 13 / 0.55);
+  overflow: hidden;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+.planet-bands {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: calc(100% + 900px);
+  transform: translateX(var(--spin, 0));
+  background: repeating-linear-gradient(
+    168deg,
+    transparent 0 22px,
+    rgb(3 6 13 / 0.14) 22px 30px,
+    transparent 30px 61px,
+    rgb(255 255 255 / 0.1) 61px 66px
+  );
+  mix-blend-mode: soft-light;
+}
+@media (max-width: 719px) {
+  html.motion .sat {
+    padding: 4px 11px;
+    font-size: 13px;
+  }
+}
+
+.lit-w {
+  display: inline-block;
+  white-space: nowrap;
+}
+.lit-u {
+  display: inline-block;
+}
+html.motion .lit-u,
+html.motion .lit-pill {
+  will-change: transform;
+}
+/* --lit is how much light reaches the letter; --ex/--ey is one step directly
+   away from the ship. Six steps make a slab of depth on the far side. */
+html.motion .lit-u {
+  --side: color-mix(in oklab, var(--tone, var(--color-plasma)) 46%, var(--color-void));
+  color: color-mix(in oklab, #fff3d6 calc(var(--lit, 0.5) * 100%), #8d8fb4);
+  text-shadow:
+    calc(var(--ex, 0px) * 1) calc(var(--ey, 0px) * 1) 0 var(--side),
+    calc(var(--ex, 0px) * 2) calc(var(--ey, 0px) * 2) 0 var(--side),
+    calc(var(--ex, 0px) * 3) calc(var(--ey, 0px) * 3) 0 var(--side),
+    calc(var(--ex, 0px) * 4) calc(var(--ey, 0px) * 4) 0 var(--side),
+    calc(var(--ex, 0px) * 5) calc(var(--ey, 0px) * 5) 0 var(--side),
+    calc(var(--ex, 0px) * 6) calc(var(--ey, 0px) * 6) 0 var(--side);
+}
+html.motion .contact .lit-u {
+  --tone: var(--color-comet);
+}
+html.motion .lit-pill {
+  border-color: color-mix(in oklab, var(--color-solar) calc(var(--lit, 0) * 85%), var(--color-line));
+}
+
+/* Hide objects until physics takes over, so the tidy layout never flashes
+   before the drop. A timed fallback shows them anyway if scripts fail. */
+html.motion .room:not([data-ready]) .obj {
+  opacity: 0;
+  animation: reveal 0s linear 4s forwards;
+}
+@keyframes reveal {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.8);
+  }
+}
+
+/* ---------- Case study dialog ---------- */
+
+.case {
+  width: min(760px, calc(100vw - 24px));
+  max-height: calc(100svh - 24px);
+  margin: auto;
+  padding: 0;
+  border: 1px solid rgb(242 240 255 / 0.3);
+  border-radius: 22px;
+  background: var(--color-deep);
+  color: var(--color-starlight);
+  box-shadow: 0 0 80px -20px var(--accent, var(--color-plasma));
+  overflow: hidden;
+}
+.case[open] {
+  display: flex;
+  flex-direction: column;
+  animation: case-in 380ms cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+.case::backdrop {
+  background: rgb(3 6 13 / 0.72);
+  backdrop-filter: blur(4px);
+}
+.case-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+@keyframes case-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+}
+.case h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.1;
+  margin: 28px 0 8px;
+}
+.case li {
+  position: relative;
+  padding-left: 24px;
+  margin-top: 6px;
+}
+.case li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.5em;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent, var(--color-aurora));
+  box-shadow: 0 0 10px var(--accent, var(--color-aurora));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .sky .twinkle,
+  .sky .shooting {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

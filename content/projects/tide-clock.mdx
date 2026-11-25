@@ -1,0 +1,35 @@
+---
+title: Tide Clock
+year: 2024
+weeks: 5
+discipline: code
+role: Solo developer
+tools: [Python, Raspberry Pi, E-ink]
+summary: A desk display that shows today's tides and weather on an e-ink screen.
+order: 2
+phases:
+  - { name: Research, weeks: 1 }
+  - { name: Build, weeks: 3 }
+  - { name: Polish, weeks: 1 }
+---
+
+> Placeholder project. Replace this file with your own.
+
+## The problem
+
+I wanted to know the tide before cycling to the beach, without picking up my phone.
+
+## What I did
+
+I wrote a Python service on a Raspberry Pi that fetches tide and weather data each hour and draws it to an e-ink panel.
+
+- Designed the layout for a screen with two colours and a slow refresh.
+- Cached the data so the display still works when the network drops.
+
+## Result
+
+It has run on my desk for a year without a restart.
+
+## What I learned
+
+Designing for a screen that updates once an hour forced me to decide what actually mattered.

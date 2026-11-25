@@ -1,0 +1,874 @@
+@import "tailwindcss";
+
+/* Tokens. Source of truth: docs/brand-guidelines.md */
+@theme inline {
+  --font-serif: var(--font-newsreader), Georgia, serif;
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+}
+
+@theme {
+  --color-paper: #f7f3ea;
+  --color-desk: #2a2826;
+  --color-blue: #2f4fe0;
+  --color-pink: #ff6b8b;
+  --color-ink: #1c1a17;
+  --color-mute: #6f6a60;
+}
+
+:root {
+  --p: 360px;
+  --gutter: clamp(16px, 3vw, 40px);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.09 0 0 0 0 0.08 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  color-scheme: light;
+}
+
+html {
+  background: var(--color-desk);
+}
+body {
+  background: var(--color-desk);
+  color: var(--color-ink);
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.5;
+  font-optical-sizing: auto;
+  overflow-x: clip;
+}
+::selection {
+  background: var(--color-pink);
+  color: var(--color-ink);
+}
+:focus-visible {
+  outline: 3px solid var(--color-blue);
+  outline-offset: 3px;
+}
+
+.skip {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--color-blue);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+.skip:focus-visible {
+  transform: none;
+}
+
+/* ---------- Type ---------- */
+
+.label,
+.num,
+.meta,
+.entry-meta,
+.entry-n {
+  font-family: var(--font-sans);
+  font-variation-settings: "wdth" 78;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+/* Riso misregistration: the pink pass sits a hair off the blue one. */
+.riso {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  color: var(--color-blue);
+  letter-spacing: -0.015em;
+  line-height: 1;
+  text-shadow: 0.05em 0.035em 0 var(--color-pink);
+}
+.h2 {
+  font-size: clamp(36px, 5vw, 64px);
+  margin-top: 10px;
+}
+.lede {
+  font-size: clamp(20px, 2vw, 26px);
+  font-style: italic;
+  color: var(--color-mute);
+  margin-top: 14px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1.5px solid var(--color-ink);
+  border-radius: 3px;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-variation-settings: "wdth" 88;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background 150ms var(--ease),
+    color 150ms var(--ease),
+    transform 150ms var(--ease);
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  transform: none;
+}
+.btn-blue {
+  background: var(--color-blue);
+  border-color: var(--color-blue);
+  color: var(--color-paper);
+}
+.btn-icon {
+  width: 46px;
+  padding: 0;
+  font-size: 22px;
+  line-height: 1;
+}
+.link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--color-pink);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* ---------- Top bar ---------- */
+
+.topbar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px var(--gutter);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  mix-blend-mode: difference;
+  color: var(--color-paper);
+  pointer-events: none;
+}
+.topbar a {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+}
+.topbar nav {
+  display: flex;
+  gap: clamp(14px, 2vw, 28px);
+}
+.topbar a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ---------- The desk and the sheet ---------- */
+
+.scene {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  perspective: 2600px;
+  background:
+    radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--color-desk) 80%, #fff 8%) 0%, var(--color-desk) 70%),
+    var(--color-desk);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.cam {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+.cam2 {
+  transform-style: preserve-3d;
+}
+.sheet {
+  position: absolute;
+  left: calc(-1.5 * var(--p));
+  top: calc(-1.5 * var(--p));
+  width: calc(3 * var(--p));
+  height: calc(3 * var(--p));
+  transform-style: preserve-3d;
+  transform: rotateY(var(--flip, 0deg));
+}
+/* Soft shadow on the desk under the sheet. It follows the visible box and
+   does not turn over with the sheet. */
+.shadow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.5);
+  filter: blur(26px);
+  transform: translateZ(-90px);
+  pointer-events: none;
+}
+
+.hinge {
+  --a: 0deg;
+  --z: 0px;
+  transform-style: preserve-3d;
+  /* How much a face is shaded while it is turning: darkest edge-on. */
+  --shade: calc(max(sin(var(--a)), -1 * sin(var(--a))) * 0.5);
+}
+/* Rows are the outer hinges, three panels wide. */
+.row {
+  position: absolute;
+  left: 0;
+  width: calc(3 * var(--p));
+  height: var(--p);
+  transform-style: preserve-3d;
+}
+.row-u {
+  top: 0;
+  transform-origin: 50% 100%;
+  transform: translateZ(var(--z)) rotateX(var(--a));
+}
+.row-m {
+  top: var(--p);
+}
+.row-d {
+  top: calc(2 * var(--p));
+  transform-origin: 50% 0%;
+  transform: translateZ(var(--z)) rotateX(var(--a));
+}
+/* Column parts: the left and right third of each row, one panel each. */
+.part {
+  position: absolute;
+  top: 0;
+  width: var(--p);
+  height: var(--p);
+}
+.part-l {
+  left: 0;
+  transform-origin: 100% 50%;
+  transform: translateZ(var(--z)) rotateY(var(--a));
+}
+.part-r {
+  left: calc(2 * var(--p));
+  transform-origin: 0% 50%;
+  transform: translateZ(var(--z)) rotateY(var(--a));
+}
+.row > .panel {
+  left: var(--p);
+}
+.panel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--p);
+  height: var(--p);
+  transform-style: preserve-3d;
+}
+
+/* ---------- Faces: the printed sides of a panel ---------- */
+
+.face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 26px 28px;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(28, 26, 23, 0.08);
+  transition: transform 250ms var(--ease);
+}
+.face.front {
+  transform: translateZ(0.6px);
+}
+.face.back {
+  transform: rotateY(180deg) translateZ(0.6px);
+}
+/* The card is folded twice before the packet is turned over, so its
+   reverse is hinged the other way to read the right way up. */
+.face.back.card {
+  transform: rotateX(180deg) translateZ(0.6px);
+}
+.face::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--grain);
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-ink);
+  opacity: var(--shade, 0);
+  pointer-events: none;
+}
+.face > * {
+  position: relative;
+}
+.face .num {
+  color: var(--color-mute);
+}
+.face h3 {
+  font-size: 34px;
+  margin-top: auto;
+}
+.face p {
+  font-size: 15.5px;
+  line-height: 1.4;
+  max-width: 30ch;
+}
+.face .meta {
+  margin-top: auto;
+  color: var(--color-mute);
+  text-transform: none;
+  letter-spacing: 0.03em;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.face .meta a {
+  color: var(--color-blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.face .skills {
+  display: grid;
+  gap: 8px;
+  margin-top: auto;
+}
+.face .skills dt {
+  font-family: var(--font-sans);
+  font-variation-settings: "wdth" 78;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-blue);
+}
+.face .skills dd {
+  font-size: 15px;
+}
+.face.intro h3 {
+  margin-top: auto;
+}
+.face.intro p {
+  font-size: 15px;
+}
+.face.intro p + p {
+  display: none;
+}
+
+/* The link that lifts a panel off the sheet. */
+.lift {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 16px 20px;
+  font-family: var(--font-sans);
+  font-variation-settings: "wdth" 80;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-blue);
+  text-decoration: none;
+}
+.lift > span[aria-hidden] {
+  opacity: 0;
+  transition: opacity 200ms var(--ease);
+}
+.face:hover .lift > span[aria-hidden],
+.lift:focus-visible > span[aria-hidden] {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.fold[data-stage="open"] .face.front:has(.lift:hover),
+.fold[data-stage="open"] .face.front:has(.lift:focus-visible) {
+  transform: translateZ(18px);
+}
+
+/* Ghost: the printing on the reverse, seen through the paper. */
+.face.ghost {
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--color-paper) 94%, var(--color-ink));
+}
+.face.ghost span {
+  font-size: 44px;
+  font-weight: 500;
+  color: var(--color-blue);
+  opacity: 0.1;
+  transform: scaleX(-1);
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
+
+/* The cover: back of the first panel to open. */
+.face.cover {
+  justify-content: flex-start;
+  color: var(--color-blue);
+}
+.cover-name {
+  margin-top: auto;
+  font-size: 54px;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+  color: var(--color-blue);
+  text-shadow: 0.05em 0.035em 0 var(--color-pink);
+  max-width: none !important;
+}
+.cover-role {
+  font-style: italic;
+  color: var(--color-ink);
+}
+.cover-hint {
+  margin-top: auto;
+  font-family: var(--font-sans);
+  font-variation-settings: "wdth" 80;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+
+/* The business card: back of the centre panel. */
+.face.card {
+  justify-content: center;
+  gap: 4px;
+  color: var(--color-blue);
+}
+.face.card .logo {
+  margin-bottom: auto;
+}
+.card-name {
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 500;
+  color: var(--color-blue);
+  text-shadow: 0.05em 0.035em 0 var(--color-pink);
+  max-width: none !important;
+}
+.card-role {
+  font-style: italic;
+  color: var(--color-ink);
+}
+.card-lines {
+  margin-top: auto;
+  font-family: var(--font-sans);
+  font-variation-settings: "wdth" 85;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-ink);
+}
+
+/* ---------- Scene UI ---------- */
+
+.sheet-ui {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px var(--gutter) max(14px, env(safe-area-inset-bottom));
+  color: var(--color-paper);
+  pointer-events: none;
+}
+.sheet-ui > * {
+  pointer-events: auto;
+}
+.sheet-ui .hint {
+  font-style: italic;
+  font-size: 16px;
+  opacity: 0.85;
+  min-height: 24px;
+}
+.zoomers {
+  display: flex;
+  gap: 6px;
+}
+.zoomers[hidden],
+.savers[hidden] {
+  display: none;
+}
+.fold[data-stage="open"] .scene {
+  cursor: grab;
+}
+
+/* Arrival hint under the closed packet. */
+.fold[data-mode="sheet"][data-stage=""] .hint::before {
+  content: "One sheet of paper. Scroll to unfold it.";
+}
+
+/* ---------- Stack mode: phones and reduced motion ---------- */
+
+.fold[data-mode="stack"] .scene {
+  height: auto;
+  overflow: visible;
+  perspective: 1400px;
+  padding: 80px 16px 24px;
+  touch-action: auto;
+}
+.fold[data-mode="stack"] .cam,
+.fold[data-mode="stack"] .cam2 {
+  position: static;
+  width: auto;
+  height: auto;
+  transform: none;
+}
+.fold[data-mode="stack"] .sheet {
+  position: static;
+  width: min(100%, 440px);
+  height: auto;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transform: none;
+}
+.fold[data-mode="stack"] .shadow {
+  display: none;
+}
+.fold[data-mode="stack"] :is(.row, .part, .panel) {
+  display: contents;
+}
+.fold[data-mode="stack"] .cover-name {
+  font-size: 64px;
+}
+.fold[data-mode="stack"] .face {
+  position: relative;
+  inset: auto;
+  order: var(--o, 20);
+  min-height: 300px;
+  backface-visibility: visible;
+  transform: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  user-select: text;
+}
+.fold[data-mode="stack"] .face::after {
+  display: none;
+}
+.fold[data-mode="stack"] .face.ghost {
+  display: none;
+}
+.fold[data-mode="stack"] .face.cover {
+  min-height: 70svh;
+}
+.fold[data-mode="stack"] .lift > span[aria-hidden] {
+  opacity: 1;
+}
+.fold[data-mode="stack"] .sheet-ui {
+  position: static;
+  justify-content: center;
+  padding-top: 20px;
+}
+.fold[data-mode="stack"] .savers[hidden] {
+  display: block;
+}
+.fold[data-mode="stack"] .hint,
+.fold[data-mode="stack"] .zoomers {
+  display: none;
+}
+
+/* ---------- Flat sections ---------- */
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.flat,
+.contact {
+  background: var(--color-paper);
+  padding: clamp(56px, 9vh, 112px) var(--gutter);
+  position: relative;
+}
+.flat::before,
+.contact::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--grain);
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.flat > *,
+.contact > * {
+  position: relative;
+}
+.contact {
+  border-top: 1.5px solid var(--color-blue);
+}
+.list {
+  margin-top: 36px;
+  border-top: 1.5px solid var(--color-ink);
+}
+.entry {
+  display: grid;
+  grid-template-columns: 3ch 1fr auto;
+  gap: 18px;
+  align-items: baseline;
+  padding: 18px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 20%, transparent);
+  text-decoration: none;
+  color: inherit;
+}
+.entry-n {
+  color: var(--color-mute);
+}
+.entry-title {
+  display: block;
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.05;
+  font-weight: 500;
+  color: var(--color-blue);
+  transition: text-shadow 150ms var(--ease);
+}
+.entry:hover .entry-title,
+.entry:focus-visible .entry-title {
+  text-shadow: 0.05em 0.035em 0 var(--color-pink);
+}
+.entry-sum {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-mute);
+  font-size: 16px;
+  max-width: 60ch;
+}
+.entry-meta {
+  color: var(--color-mute);
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .entry {
+    grid-template-columns: 3ch 1fr;
+  }
+  .entry-meta {
+    grid-column: 2;
+  }
+}
+.about p {
+  margin-top: 14px;
+  font-size: 18px;
+  max-width: 44ch;
+}
+.foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: clamp(40px, 8vh, 80px);
+  padding-top: 18px;
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 20%, transparent);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-mute);
+}
+.foot .logo {
+  color: var(--color-blue);
+}
+
+/* ---------- Case study: a panel lifted off the sheet ---------- */
+
+.case {
+  width: min(720px, calc(100vw - 24px));
+  max-height: calc(100svh - 24px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+.case[open] {
+  display: flex;
+  flex-direction: column;
+  animation: lift-in 420ms var(--ease);
+}
+.case::backdrop {
+  background: rgba(20, 18, 16, 0.6);
+}
+.case-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  position: relative;
+}
+.case-scroll::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--grain);
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+@keyframes lift-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) rotateX(8deg);
+  }
+}
+.case-head {
+  position: relative;
+  padding: 32px 36px 28px;
+  border-bottom: 1.5px solid var(--color-blue);
+}
+.case-close {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+}
+.case-title {
+  font-size: clamp(40px, 6vw, 64px);
+  margin-top: 10px;
+  padding-right: 48px;
+}
+.case-claim {
+  margin-top: 14px;
+  font-size: 20px;
+  font-style: italic;
+  max-width: 40ch;
+}
+.case-body {
+  padding: 24px 36px 36px;
+}
+.case-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 20%, transparent);
+}
+.case-meta dt,
+.case-numbers dt {
+  font-family: var(--font-sans);
+  font-variation-settings: "wdth" 78;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+.case-meta dd {
+  font-size: 16px;
+  margin-top: 2px;
+}
+.case-numbers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 20%, transparent);
+}
+.case-numbers dd {
+  font-size: 36px;
+  line-height: 1;
+  color: var(--color-blue);
+  text-shadow: 0.05em 0.035em 0 var(--color-pink);
+  font-weight: 500;
+}
+.case-numbers dt {
+  margin-top: 6px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12.5px;
+}
+.prose h3 {
+  font-family: var(--font-sans);
+  font-variation-settings: "wdth" 80;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-blue);
+  margin: 28px 0 8px;
+}
+.prose p {
+  font-size: 18px;
+  max-width: 60ch;
+}
+.prose ul {
+  margin-top: 10px;
+  max-width: 60ch;
+}
+.prose li {
+  position: relative;
+  padding-left: 22px;
+  margin-top: 6px;
+  font-size: 17px;
+}
+.prose li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 10px;
+  height: 10px;
+  background: var(--color-pink);
+  transform: rotate(45deg);
+}
+.case-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 20%, transparent);
+}
+@media (max-width: 600px) {
+  .case-head,
+  .case-body {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .case-meta,
+  .case-numbers {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
