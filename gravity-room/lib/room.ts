@@ -36,7 +36,7 @@ interface Item {
   w: number;
   h: number;
   order: number;
-  isCard: boolean;
+  isToken: boolean;
   phase: number;
   color: string;
 }
@@ -140,7 +140,7 @@ export function createRoom(root: HTMLElement, floorEl: HTMLElement, M: M, opts: 
         w,
         h,
         order: Number(el.dataset.order ?? i),
-        isCard: el.dataset.kind === "card",
+        isToken: el.dataset.kind === "token",
         phase: rand(0, Math.PI * 2),
         color: getComputedStyle(el).getPropertyValue("--c").trim() || "#f2f0ff",
       };
@@ -473,7 +473,7 @@ export function createRoom(root: HTMLElement, floorEl: HTMLElement, M: M, opts: 
     if (drag.moved > 6) {
       suppressClick = true;
       window.setTimeout(() => (suppressClick = false), 60);
-      if (drag.item.isCard) watch = { item: drag.item, frames: 0 };
+      if (drag.item.isToken) watch = { item: drag.item, frames: 0 };
     }
     drag = null;
   }

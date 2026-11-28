@@ -29,7 +29,7 @@ export function Orbit({ skills }: { skills: { area: string; items: string[] }[] 
           ))}
         </svg>
 
-        <h2 id="orbit-h" className="orbit-h font-display text-[14px] font-semibold uppercase tracking-wide text-aurora">
+        <h2 id="orbit-h" className="orbit-h font-display text-[14px] font-semibold uppercase tracking-wide text-plasma">
           What I use
         </h2>
         {skills.map((s, k) => (

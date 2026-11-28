@@ -1,15 +1,12 @@
 "use client";
 
-import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { Project } from "@/content/projects";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { DISCIPLINE_COLOR, type Project } from "@/content/projects";
 import { createRoom, type Mode, type RoomApi } from "@/lib/room";
 import { onScrollFrame } from "@/lib/scroll";
-import { CaseDialog } from "./CaseDialog";
 
 const TILE_COLOR = "c-plasma";
-const CARD_COLOR = { code: "c-plasma", design: "c-comet", video: "c-solar" } as const;
-const DISCIPLINE = { code: "Code", design: "Design", video: "Video" } as const;
 
 interface Props {
   firstName: string;
@@ -25,6 +22,7 @@ export function Room({ firstName, lastName, intro, year, projects }: Props) {
   const rootRef = useRef<HTMLElement>(null);
   const floorRef = useRef<HTMLDivElement>(null);
   const apiRef = useRef<RoomApi | null>(null);
+  const router = useRouter();
   const [mode, setMode] = useState<Mode>("tidy");
   const [ready, setReady] = useState(false);
   const [floating, setFloating] = useState(true);
@@ -56,7 +54,6 @@ export function Room({ firstName, lastName, intro, year, projects }: Props) {
       if (!reduced) offScroll = onScrollFrame(({ v }) => api?.shove(v));
       setReady(true);
       setCanTilt("DeviceOrientationEvent" in window && window.matchMedia("(pointer: coarse)").matches);
-      syncHash();
     });
 
     return () => {
@@ -65,37 +62,24 @@ export function Room({ firstName, lastName, intro, year, projects }: Props) {
       api?.destroy();
       apiRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // The URL hash decides which case study is open, so links are shareable
-  // and the back button closes the dialog.
-  const syncHash = useCallback(() => {
-    const slug = decodeURIComponent(window.location.hash.slice(1));
-    let open = false;
-    document.querySelectorAll<HTMLDialogElement>("dialog.case").forEach((d) => {
-      if (d.id === `case-${slug}`) {
-        if (!d.open) d.showModal();
-        d.querySelector(".case-scroll")?.scrollTo(0, 0);
-        open = true;
-      } else if (d.open) {
-        d.close();
-      }
-    });
-    apiRef.current?.pause(open);
-  }, []);
-
+  // Case studies used to open from #slug on this page. Old links still work:
+  // they go on to the project's own page.
   useEffect(() => {
-    window.addEventListener("hashchange", syncHash);
-    syncHash();
-    return () => window.removeEventListener("hashchange", syncHash);
-  }, [syncHash]);
+    const go = () => {
+      const slug = decodeURIComponent(window.location.hash.slice(1));
+      if (projects.some((p) => p.slug === slug)) router.replace(`/work/${slug}/`);
+    };
+    go();
+    window.addEventListener("hashchange", go);
+    return () => window.removeEventListener("hashchange", go);
+  }, [projects, router]);
 
   // Keyboard shortcut: T toggles tidy and mess.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key.toLowerCase() !== "t" || e.metaKey || e.ctrlKey || e.altKey) return;
-      if (document.querySelector("dialog[open]")) return;
       const t = e.target as HTMLElement;
       if (t.isContentEditable || /^(input|textarea|select)$/i.test(t.tagName)) return;
       toggle();
@@ -119,6 +103,23 @@ export function Room({ firstName, lastName, intro, year, projects }: Props) {
       apiRef.current?.float(true);
     };
   }, [tilting]);
+
+  // In-page links (tokens, About me, Say hi) scroll there without adding a
+  // history entry the router does not know about, so Back from a case study
+  // still lands in the room. A token also lights up its card for a moment.
+  function onAnchor(e: React.MouseEvent) {
+    const a = (e.target as Element).closest<HTMLAnchorElement>('a[href^="#"]');
+    const target = a && document.getElementById(a.hash.slice(1));
+    if (!target) return;
+    e.preventDefault();
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    target.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: a.dataset.kind === "token" ? "center" : "start" });
+    if (a.dataset.kind === "token") {
+      target.dataset.flash = "";
+      window.setTimeout(() => delete target.dataset.flash, 1800);
+      target.querySelector<HTMLElement>("a")?.focus({ preventScroll: true });
+    }
+  }
 
   function toggle() {
     if (mode === "mess") apiRef.current?.tidy();
@@ -167,19 +168,13 @@ export function Room({ firstName, lastName, intro, year, projects }: Props) {
 
   return (
     <>
-      <section ref={rootRef} className="room" data-mode="tidy" aria-label="Projects">
+      <section ref={rootRef} id="top" className="room" data-mode="tidy" aria-label="The room" onClick={onAnchor}>
         <canvas className="dust" aria-hidden="true" />
-        <div className="room-top">
-          <a href="#about" className="flex min-h-11 items-center gap-2" aria-label="About me">
-            <Image src="/logo.svg" alt="" width={66} height={55} priority />
-          </a>
-          <p className="max-w-[30ch] text-right text-[14px] leading-tight sm:max-w-none sm:text-[15px]">{intro}</p>
-        </div>
-
         <h1 className="name" aria-label={`${firstName} ${lastName}`}>
           {tiles(firstName)}
           {tiles(lastName)}
         </h1>
+        <p className="room-intro">{intro}</p>
 
         <div className="loose">
           <span data-obj data-shape="circle" data-order={order++} className="obj dot ringed c-solar" aria-hidden="true" />
@@ -195,35 +190,27 @@ export function Room({ firstName, lastName, intro, year, projects }: Props) {
           <span data-obj data-shape="circle" data-order={order++} className="obj dot sm c-comet" aria-hidden="true" />
         </div>
 
-        <ul className="cards">
-          {projects.map((p, i) => (
+        <ul className="tokens" aria-label="Projects">
+          {projects.map((p) => (
             <li key={p.slug}>
               <a
-                href={`#${p.slug}`}
+                href={`#card-${p.slug}`}
                 data-obj
-                data-shape="rect"
-                data-kind="card"
+                data-shape="pill"
+                data-kind="token"
                 data-title={p.title}
                 data-order={order++}
-                className={`obj card ${CARD_COLOR[p.discipline]}`}
+                className={`obj pill token ${DISCIPLINE_COLOR[p.discipline]}`}
                 draggable={false}
               >
-                <span className="card-top">
-                  <span>{String(i + 1).padStart(2, "0")}</span>
-                  <span>{DISCIPLINE[p.discipline]}</span>
-                </span>
-                <span className="card-title">{p.title}</span>
-                <span className="card-sum">{p.summary}</span>
-                <span className="card-meta">
-                  {p.weeks} weeks · {p.year}
-                </span>
+                {p.title}
               </a>
             </li>
           ))}
         </ul>
 
-        <div ref={floorRef} className="bar">
-          <p className="display text-[17px] sm:text-[20px]" aria-live="polite">
+        <div ref={floorRef} className="dock">
+          <p className="dock-hint display" aria-live="polite">
             {hint}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -257,22 +244,6 @@ export function Room({ firstName, lastName, intro, year, projects }: Props) {
           </div>
         </div>
       </section>
-
-      {projects.map((p, i) => (
-        <CaseDialog
-          key={p.slug}
-          project={p}
-          color={CARD_COLOR[p.discipline]}
-          discipline={DISCIPLINE[p.discipline]}
-          next={projects[(i + 1) % projects.length]}
-          onClosed={() => {
-            if (window.location.hash === `#${p.slug}`) {
-              history.replaceState(null, "", window.location.pathname + window.location.search);
-            }
-            apiRef.current?.pause(false);
-          }}
-        />
-      ))}
 
       {toast && (
         <p className="toast c-aurora" role="status">

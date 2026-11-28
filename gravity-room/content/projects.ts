@@ -9,6 +9,8 @@ export interface Project {
   role: string;
   tools: string[];
   summary: string;
+  /** Headline numbers from the write-up. The first one also goes on the card. */
+  stats: { value: string; label: string }[];
   sections: { heading: string; body: string[]; points?: string[] }[];
 }
 
@@ -26,6 +28,11 @@ export const projects: Project[] = [
     role: "Solo developer",
     tools: ["TypeScript", "React", "Supabase"],
     summary: "A class schedule app that shows the next lesson and room at a glance.",
+    stats: [
+      { value: "140", label: "students in the first term" },
+      { value: "9 wks", label: "from interviews to launch" },
+      { value: "12", label: "students interviewed" },
+    ],
     sections: [
       {
         heading: "The problem",
@@ -59,6 +66,11 @@ export const projects: Project[] = [
     role: "Solo developer",
     tools: ["Python", "Raspberry Pi", "E-ink"],
     summary: "A desk display that shows today's tides and weather on an e-ink screen.",
+    stats: [
+      { value: "1 yr", label: "on my desk without a restart" },
+      { value: "5 wks", label: "to build" },
+      { value: "Hourly", label: "tide and weather refresh" },
+    ],
     sections: [
       {
         heading: "The problem",
@@ -88,6 +100,11 @@ export const projects: Project[] = [
     role: "Designer",
     tools: ["Figma", "Illustrator"],
     summary: "A visual identity for the school hiking club, from logo to trail signs.",
+    stats: [
+      { value: "18 → 31", label: "sign-ups for the first trip" },
+      { value: "60", label: "club members using it" },
+      { value: "3", label: "directions presented" },
+    ],
     sections: [
       {
         heading: "The problem",
@@ -120,6 +137,11 @@ export const projects: Project[] = [
     role: "UX and UI designer",
     tools: ["Figma", "Maze", "After Effects"],
     summary: "A redesign concept for a city transit app, tested with 20 commuters.",
+    stats: [
+      { value: "41s → 12s", label: "to plan a saved trip" },
+      { value: "20", label: "commuters tested" },
+      { value: "2 taps", label: "for a saved trip, down from 9" },
+    ],
     sections: [
       {
         heading: "The problem",
@@ -153,6 +175,11 @@ export const projects: Project[] = [
     role: "Writer and editor",
     tools: ["DaVinci Resolve", "Premiere"],
     summary: "A series of 12 short explainers on study techniques, each under a minute.",
+    stats: [
+      { value: "48k", label: "views in the first month" },
+      { value: "12", label: "videos, 40 seconds each" },
+      { value: "95", label: "words per script" },
+    ],
     sections: [
       { heading: "The problem", body: ["Study advice online was either an hour long or too thin to use."] },
       {
@@ -179,6 +206,11 @@ export const projects: Project[] = [
     role: "Director and editor",
     tools: ["DaVinci Resolve", "Sony FX30", "Audition"],
     summary: "A 12-minute documentary about the people who forage a city shoreline at dawn.",
+    stats: [
+      { value: "22h → 12m", label: "of footage to final cut" },
+      { value: "9", label: "mornings filmed" },
+      { value: "Shortlisted", label: "best documentary, student festival" },
+    ],
     sections: [
       {
         heading: "The problem",
@@ -200,3 +232,8 @@ export const projects: Project[] = [
     ],
   },
 ];
+
+/** Colour class and label for each discipline, shared by tokens, cards and case pages. */
+export const DISCIPLINE_COLOR = { code: "c-plasma", design: "c-comet", video: "c-solar" } as const;
+export const DISCIPLINE_LABEL = { code: "Code", design: "Design", video: "Video" } as const;
+export const DISCIPLINES: Discipline[] = ["code", "design", "video"];

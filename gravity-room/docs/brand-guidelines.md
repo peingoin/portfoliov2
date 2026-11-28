@@ -11,10 +11,10 @@ Everything on the page is a physical object, and the room is in orbit. The brand
 | Void | #070817 | Page background, text on colour blocks |
 | Deep | #11132B | Panels, dialogs, quiet buttons |
 | Starlight | #F2F0FF | Text on dark, neutral blocks |
-| Plasma | #9B8CFF | Code projects, primary buttons |
-| Comet | #FF7A6B | Design projects |
-| Solar | #FFC857 | Video projects, contact button |
-| Aurora | #5EEAD4 | Navigation pills, labels, focus ring |
+| Plasma | #A497FF | Code projects; the one UI accent: primary buttons, nav "Say hi", section labels, links |
+| Comet | #FF8E7C | Design projects |
+| Solar | #F2C46D | Video projects |
+| Aurora | #72D9C6 | In-room navigation pills, focus ring |
 | Line | Starlight at 20% | Dividers and quiet borders |
 
 Bright colours always carry Void text; dark surfaces always carry Starlight text. Every pairing meets WCAG AA. Colour is never the only signal: each card also names its discipline.
@@ -28,11 +28,17 @@ The sky is Void with three soft nebula clouds (Plasma top left, Aurora lower rig
 
 ## Shape
 
-- Objects are night glass: a Void base lit from the upper left by their own colour, with a 2px rim and a soft glow of that colour. No pictures on the blocks.
+- Objects are night glass: a Void base lit from the upper left by their own colour, with a 2px rim and a faint glow of that colour. No pictures on the blocks.
+- Discipline colours mark a project; they never fill a whole panel. Work cards and case study headers are neutral glass with a colour dot, label or tint, and stats are Starlight.
 - Picking an object up brightens its glow.
 - Corner radius: 14px for blocks and cards, full for pills and circles.
 - Circles are planets: shaded spheres, and the large one has a ring. The planet in "What I use" is the same sphere at full size, with faint cloud bands that turn as you scroll.
 - Dividers are 1px Line. No heavy outlines.
+- Projects appear twice on the home page. In the room each one is a **token**: a throwable night-glass pill in its discipline colour with just the title. Clicking one jumps to its card. In **Selected work** each one is an upright card: number, discipline, title, summary, one headline stat, and weeks · year. Chips filter by discipline.
+- The **nav** is a translucent Deep bar with a 1px Line under it. It tucks away while you scroll down and returns when you scroll up. "Say hi" is the one Solar pill.
+- The **dock** is the room's console: a floating rounded panel at the foot of the room. Its top edge is the floor the blocks land on.
+- A **case study** is its own page (`/work/<slug>/`). It has a breadcrumb, a header band in the discipline colour with Void text (the card grows into it), a row of big stats, a metadata column (discipline, year, time, role, tools as pills), the write-up, and a large "Next project" card.
+- In **Contact** the email address itself is the headline, underlined in Solar.
 - The ship is the one character and the one light below the room: a night-glass rocket with a Plasma hull, Comet fins, an Aurora window and a Solar to Comet flame. Display type near it warms to cream and grows a slab of depth on its far side (Plasma in About, Comet in Contact); type far from it cools to a dim lilac.
 
 ## Voice
@@ -46,6 +52,8 @@ Warm, funny, direct. Second person. Short. Space words only where they are also 
 | Docked | "All docked. Sensible choice." |
 | Buttons | "Launch", "Dock", "Boost", "Gravity" |
 | Contact | "Say hi" |
+| Work | "Selected work", "Things I made, start to finish", "Read →" |
+| Case study | "Back to the room", "Next project", "All work" |
 | Readout | "Speed 420 · 38% to landing", "Touchdown." |
 | 404 | "This page drifted out of orbit." |
 

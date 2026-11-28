@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Oxanium, Space_Grotesk } from "next/font/google";
+import { SiteNav } from "@/components/SiteNav";
 import { Starfield } from "@/components/Starfield";
 import { site } from "@/content/site";
 import { scenes } from "@/lib/scenes";
@@ -40,12 +41,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" data-scene={site.scene} className={`${oxanium.variable} ${spaceGrotesk.variable} antialiased`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: motionFlag }} />
-        <noscript>
-          <style>{`dialog.case{display:block;position:static;margin:24px auto;max-height:none}`}</style>
-        </noscript>
       </head>
       <body>
         <Starfield />
+        <SiteNav />
         {children}
       </body>
     </html>
